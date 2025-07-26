@@ -1,0 +1,55 @@
+version: "3.8"
+
+services:
+    haproxy:
+        image: haproxy:latest
+        container_name: haproxy
+        ports:
+            - "9999:80"
+        volumes:
+            - ./haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg
+        deploy:
+          resources:
+            limits:
+              cpus: "0.1"
+              memory: "20MB"
+    
+    api-one:
+        build:
+            context: ./
+        container_name: api-one
+        ports:
+            - "8081:8080"
+        deploy:
+          resources:
+            limits:
+              cpus: "0.6"
+              memory: "150MB"
+    api-two:
+        build:
+            context: ./
+        container_name: api-two
+        ports:
+            - "8082:8080"
+        deploy:
+          resources:
+            limits:
+              cpus: "0.6"
+              memory: "150MB"
+    redis:
+      image: redis:7-alpine
+      command: redis-server --maxmemory 25mb --maxmemory-policy allkeys-lru
+      networks:
+        - backend
+      deploy:
+        resources:
+          limits:
+            cpus: "0.2"
+            memory: "30MB"
+
+
+networks:
+  backend:
+    driver: bridge
+  payment-processor:
+    external: true

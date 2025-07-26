@@ -1,0 +1,27 @@
+payment-processor
+rinha-test
+
+# Binários Go
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+
+
+# Diretórios de dependências
+vendor/
+
+# Arquivos temporários
+*.log
+*.tmp
+
+# HAProxy config local
+haproxy.cfg
+
+# Docker e IDE
+*.env
+*.DS_Store
+.vscode/
