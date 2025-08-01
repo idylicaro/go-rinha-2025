@@ -19,7 +19,7 @@ vendor/
 *.tmp
 
 # HAProxy config local
-haproxy.cfg
+# haproxy.cfg
 
 # Docker e IDE
 *.env
