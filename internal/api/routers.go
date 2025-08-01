@@ -12,7 +12,18 @@ func NewApiRouter(redisClient *redis.Client) *chi.Mux {
 	api := chi.NewRouter()
 
 	// Define routes
-	api.Post("/payments", controllers.CreatePayment)
+	// TODO: Create Factories for Controllers and Services
+	// TODO: Use environment variables for endpoints
+	createPaymentController := controllers.NewCreatePaymentController(
+		services.NewPaymentService(repositories.NewPaymentRepository(redisClient)),
+		services.NewEndpointSelectorService(
+			[]string{"http://payment-processor-default:8080", "http://payment-processor-fallback:8080"},
+			repositories.NewSelectorRepository(redisClient),
+			"best_endpoint",
+			5,
+		),
+	)
+	api.Post("/payments", createPaymentController.CreatePayment)
 	api.Get("/payments-summary", controllers.GetPaymentsSummary)
 	api.Get("/health", controllers.NewHealthController(services.NewHealthService(repositories.NewHealthRepository(redisClient))).HealthCheck)
 	return api
